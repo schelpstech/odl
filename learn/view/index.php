@@ -1,9 +1,11 @@
 <?php
 include '../app/query.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Set the account status variable. You can change this dynamically based on your logic.
-$account_status = 'locked'; // Change to 'active' to enable the form.
+$account_status = 'active'; // Change to 'active' to enable the form.
 ?>
 <!DOCTYPE html>
 <html lang="zxx">

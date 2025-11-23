@@ -13,7 +13,7 @@ include_once 'backup.class.php';
 $db_host = 'localhost';
 $db_user = 'root';
 $db_pass = '';
-$db_name = 'lhp';
+$db_name = 'odl_lhp';
 
 // connect to database
 try {
