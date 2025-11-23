@@ -71,7 +71,7 @@ try {
     <br>
 
 
-    <form method="POST" action="./app/doallocate.php">
+    <form method="POST" action="doallocate.php">
       <!-- TERM -->
       <div class="row">
         <div class="col-lg-6">
@@ -138,7 +138,7 @@ try {
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="data-table-list">
           <div class="basic-tb-hd">
-            <h2>Course Allocation List
+            <h2>Subject Allocation List
 
             </h2>
             <p></p>
@@ -148,11 +148,14 @@ try {
               <thead>
                 <tr>
                   <th>S/N</th>
-                  <th>Semester</th>
-                  <th>Programme</th>
-                  <th>Course</th>
+                  <th>Term</th>
+                  <th>Class name</th>
+                  <th>Subject</th>
                   <th>Instructor</th>
+                  <th>Supervisor</th>
                   <th>Modify</th>
+
+
                 </tr>
               </thead>
 
@@ -163,27 +166,22 @@ try {
                 $stmt = $pdo->query('SELECT term FROM lpterm WHERE status = 1 LIMIT 1');
                 $activeTerm = $stmt->fetchColumn();
 
-                // Fetch allocations with joined class and subject names
+                // Fetch allocations
                 $stmt = $pdo->prepare('
-        SELECT 
-            a.*,
-            c.classname AS class_name,
-            s.sbjname AS subject_name,
-            s.courseId AS courseId,
-            st.staffname AS instructor_name
+        SELECT a.*, 
+               s1.staffname AS instructor_name,
+               s2.staffname AS supervisor_name
         FROM lhpalloc a
-        LEFT JOIN lhpclass c ON a.classid = c.classid
-        LEFT JOIN lhpsubject s ON a.sbjid = s.sbjid
-        LEFT JOIN lhpstaff st ON a.staffid = st.sname
+        LEFT JOIN lhpstaff s1 ON a.staffid = s1.sname
+        LEFT JOIN lhpstaff s2 ON a.supro = s2.sname
         WHERE a.term = ?
-        ORDER BY a.term ASC
+        ORDER BY a.classname ASC
     ');
                 $stmt->execute([$activeTerm]);
                 $allocations = $stmt->fetchAll(PDO::FETCH_ASSOC);
               } catch (PDOException $e) {
                 die('Database error: ' . $e->getMessage());
               }
-
               ?>
 
               <tbody>
@@ -192,9 +190,10 @@ try {
                   <tr>
                     <td><?= $count++ ?></td>
                     <td><?= $row['term'] ?></td>
-                    <td><?= $row['class_name'] ?></td>
-                    <td><?= $row['courseId'] . " - " . $row['subject_name'] ?></td>
+                    <td><?= $row['classname'] ?></td>
+                    <td><?= $row['subject'] ?></td>
                     <td><?= $row['instructor_name'] ?></td>
+                    <td><?= $row['supervisor_name'] ?></td>
                     <td>
                       <a href="allocatedit.php?ref=<?= $row['aid'] ?>" class="btn btn-warning">
                         Modify
@@ -207,10 +206,11 @@ try {
               <tfoot>
                 <tr>
                   <th>S/N</th>
-                  <th>Semester</th>
-                  <th>Programme</th>
-                  <th>Course</th>
+                  <th>Term</th>
+                  <th>Class name</th>
+                  <th>Subject</th>
                   <th>Instructor</th>
+                  <th>Supervisor</th>
                   <th>Modify</th>
                 </tr>
               </tfoot>
@@ -226,5 +226,4 @@ try {
 
 <!-- Start Footer area-->
 <?php include 'foot.html'; ?>
-<script src="js/fetch.js"></script>
 <!-- End Footer area-->

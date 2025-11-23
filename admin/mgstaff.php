@@ -1,22 +1,5 @@
 <?php
-// Load PDO connector (expects $pdo). If connect.php defines $conn, we'll alias it.
-require_once "../connect.php";
-
-if (!isset($pdo)) {
-    if (isset($conn) && $conn instanceof PDO) {
-        $pdo = $conn;
-    } else {
-        //Helpful debug message — in production you might want to log instead.
-        throw new RuntimeException('No PDO instance found. Ensure connect.php defines $pdo or $conn.');
-    }
-}
-
-// Ensure session started (connect.php may have started it already)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-include "nav.php";
+include "./inc/nav.php";
 ?>
 <!-- Breadcomb area Start-->
 <div class="breadcomb-area">
@@ -190,9 +173,9 @@ include "nav.php";
                         $status    = (int)$row->status;
 
                         if ($status === 1) {
-                            $stat = '<a href="sfact.php?unamd=' . urlencode($row->sname) . '" class="btn btn-success">Active. Change</a>';
+                            $stat = '<a href="stafffstatus.php?unamd=' . urlencode($row->sname) . '" class="btn btn-success">Active. Change</a>';
                         } else {
-                            $stat = '<a href="sfact.php?unamd=' . urlencode($row->sname) . '" class="btn btn-danger">Inactive. Change</a>';
+                            $stat = '<a href="stafffstatus.php?unamd=' . urlencode($row->sname) . '" class="btn btn-danger">Inactive. Change</a>';
                         }
                 ?>
                         <tr>
@@ -201,7 +184,7 @@ include "nav.php";
                           <td><?php echo $sname; ?></td>
                           <td><?php echo $sfone; ?></td>
                           <td><?php echo $semail; ?></td>
-                          <td><a href="stedt.php?un=<?php echo urlencode($row->sname); ?>" class="btn btn-info">Edit</a></td>
+                          <td><a href="staffedit.php?un=<?php echo urlencode($row->sname); ?>" class="btn btn-info">Edit</a></td>
                           <td><?php echo $stat; ?></td>
                         </tr>
                 <?php

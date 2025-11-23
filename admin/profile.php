@@ -1,22 +1,7 @@
 <?php
 // connect.php should start the session and create a PDO instance in $conn (or $pdo aliased to $conn)
-include '../connect.php';
+include "./inc/nav.php";
 
-// Check user login
-if (!isset($_SESSION['unamed'])) {
-    header('Location: ../index.php');
-    exit();
-}
-
-// Fetch School Information (use prepared statement even though no params — consistent practice)
-try {
-    $stmt = $pdo->prepare("SELECT * FROM lhpschool LIMIT 1");
-    $stmt->execute();
-    $school = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // In production you may want to log this and show a friendly message instead
-    die("Database error: " . $e->getMessage());
-}
 
 // Provide safe defaults if table empty
 $schname    = $school['schname']    ?? '';
@@ -29,8 +14,6 @@ $schaddress = $school['address']    ?? '';
 $schlogo    = $school['logo']       ?? '';
 $schowner   = $school['proprietor'] ?? '';
 ?>
-
-<?php include "nav.php"; ?>
 
 <!-- Main Menu area End-->
 <!-- Breadcomb area Start-->
