@@ -2,18 +2,26 @@
 // connect.php should start the session and create a PDO instance in $conn (or $pdo aliased to $conn)
 include "./inc/nav.php";
 
+// Fetch class list
+try {
+    $stmt = $pdo->query("SELECT * FROM lhpschool LIMIT 1");
+    $school = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-// Provide safe defaults if table empty
-$schname    = $school['schname']    ?? '';
-$schmotto   = $school['motto']      ?? '';
-$schyear    = $school['founded']    ?? '';
-$schphone   = $school['phone']      ?? '';
-$schemail   = $school['email']      ?? '';
-$schweb     = $school['website']    ?? '';
-$schaddress = $school['address']    ?? '';
-$schlogo    = $school['logo']       ?? '';
-$schowner   = $school['proprietor'] ?? '';
-?>
+    $schname    = $school['schname']    ?? '';
+    $schmotto   = $school['motto']      ?? '';
+    $schyear    = $school['founded']    ?? '';
+    $schphone   = $school['phone']      ?? '';
+    $schemail   = $school['email']      ?? '';
+    $schweb     = $school['website']    ?? '';
+    $schaddress = $school['address']    ?? '';
+    $schlogo    = $school['logo']       ?? '';
+    $schowner   = $school['proprietor'] ?? '';
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
+ ?>
+
+
 
 <!-- Main Menu area End-->
 <!-- Breadcomb area Start-->
@@ -137,7 +145,7 @@ $schowner   = $school['proprietor'] ?? '';
                         </div>
                         <div class="nk-int-st">
                             <input type="number" required class="form-control" name="schyear"
-                                   min="1900" max="<?php echo date('Y'); ?>" value="<?php echo htmlspecialchars($schyear); ?>">
+                                min="1900" max="<?php echo date('Y'); ?>" value="<?php echo htmlspecialchars($schyear); ?>">
                         </div>
                     </div>
                 </div>
@@ -173,7 +181,7 @@ $schowner   = $school['proprietor'] ?? '';
                 <div class="col-lg-6 col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group ic-cmp-int">
                         <div class="nk-int-st">
-                            <input type="submit" class="form-control btn-success" name="sch" value="Modify School Profile"/>
+                            <input type="submit" class="form-control btn-success" name="sch" value="Modify School Profile" />
                         </div>
                     </div>
                 </div>

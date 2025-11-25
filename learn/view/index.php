@@ -33,7 +33,7 @@ $account_status = 'active'; // Change to 'active' to enable the form.
                             <div class="row justify-content-center">
                                 <div class="col-lg-6">
                                     <?php
-                                    if ($account_status == 'locked') {
+                                    if ($account_status == 'active') {
                                         // Account is locked, show locked image or message
                                         echo '<div class="modal-content cs_modal">';
                                         echo '<div class="modal-header justify-content-center theme_bg_1">';

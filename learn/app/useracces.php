@@ -6,7 +6,7 @@ if (isset($_POST['logout']) && $_POST['logout'] === 'logout') {
     $model->log_out_user();
     session_start();
     $_SESSION['msg'] =
-                        '<div class="alert text-white bg-info d-flex align-items-center justify-content-between" role="alert">
+        '<div class="alert text-white bg-info d-flex align-items-center justify-content-between" role="alert">
                             <div class="alert-text">Bye! <b>Log out successful</b>!</div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>';
@@ -17,7 +17,7 @@ if (isset($_POST['logout']) && $_POST['logout'] === 'logout') {
 
 elseif (isset($_POST['log_in']) && $_POST['log_in'] !== 'Log in') {
     $valErr .= 'Invalid Login request. You are attempting login from an unsecured page!.<br/>';
-} elseif(isset($_POST['log_in']) && $_POST['log_in'] == 'Log in') {
+} elseif (isset($_POST['log_in']) && $_POST['log_in'] == 'Log in') {
 
 
     // Retrieve form input
@@ -98,13 +98,13 @@ elseif (isset($_POST['log_in']) && $_POST['log_in'] !== 'Log in') {
     }
     //Check Password
 
-    
-        if(isset($login_details['upwd'])){
-            $password = $login_details['upwd'];
-        }elseif(isset($login_details['spwd'])){
-            $password = $login_details['spwd'];
-        }
-        if ($password == $userpwd ) {
+
+    if (isset($login_details['upwd'])) {
+        $password = $login_details['upwd'];
+    } elseif (isset($login_details['spwd'])) {
+        $password = $login_details['spwd'];
+    }
+    if (password_verify($userpwd,$password, )) {
         //Check Active Status
         if (isset($login_details['status']) && $login_details['status'] == 1) {
 

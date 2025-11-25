@@ -1,6 +1,5 @@
 <?php
-include "../connect.php";
-include "nav.php";
+include "./inc/nav.php";
 ?>
 
 

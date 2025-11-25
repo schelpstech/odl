@@ -7,7 +7,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="dashboard_header_title">
-                                <h4> Subjects for <?php echo $active_term['term'] ?></h4>
+                                <h4> Courses for <?php echo $active_term['term'] ?></h4>
                             </div>
                         </div>
 
@@ -36,7 +36,7 @@
                             <div class="media_card_body">
                                 <div class="media_card_list">
                                     <div class="single_media_card">
-                                        <span>Outlined Topics</span>
+                                        <span>Course Outline</span>
                                             <a href="../../app/router.php?pageid=scheme&ref=<?php echo $subject_list['sbjid'] ?>">
                                                 <h3><?php echo $subject_list['topic'] ?> </h3>
                                             </a>

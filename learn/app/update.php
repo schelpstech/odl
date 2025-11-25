@@ -14,16 +14,19 @@ if ($_POST['update'] === 'update_profile') {
             $valErr .= 'Phonumber field must be at least 11 digits!.<br/>';
         }
 
-        if (isset($_POST["password"]) && strlen($_POST["password"]) == 8) {
+        if (isset($_POST["password"]) && !empty($_POST["password"]) && strlen($_POST["password"]) >= 4) {
             $userpwd = htmlspecialchars($_POST["password"]);
         } else {
             $valErr .= 'Password field must not be empty and  8 characters!.<br/>';
         }
         if ($valErr == '') {
+            $hashedPassword = password_hash($userpwd, PASSWORD_DEFAULT);
             $tblName = 'lhpuser';
             $profiledata = array(
                 'numb' => $phone,
-                'upwd' => $userpwd,
+                'upwd' => $hashedPassword,
+                'dob' => $_POST["dateofbirth"],
+                'gender' => $_POST["gender"],
             );
             $conditons = array(
                 'uname' => $userid,
@@ -73,16 +76,17 @@ if ($_POST['update'] === 'update_profile') {
             $valErr .= 'Phonumber field must be at least 11 digits!.<br/>';
         }
 
-        if (isset($_POST["password"]) && strlen($_POST["password"]) >= 8) {
+         if (isset($_POST["password"]) && !empty($_POST["password"]) && strlen($_POST["password"]) >= 4) {
             $userpwd = htmlspecialchars($_POST["password"]);
         } else {
             $valErr .= 'Password field must not be empty and  less than 8 characters!.<br/>';
         }
         if ($valErr == '') {
+             $hashedPassword = password_hash($userpwd, PASSWORD_DEFAULT);
             $tblName = 'lhpstaff';
             $profiledata = array(
                 'sfone' => $phone,
-                'spwd' => $userpwd,
+                'spwd' => $hashedPassword
             );
             $conditons = array(
                 'sname' => $userid,

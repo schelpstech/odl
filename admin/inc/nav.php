@@ -165,6 +165,7 @@ if (!isset($_SESSION['unamed'])) {
                                             <li><a href="mglearners.php">Manage Learners</a></li>
                                             <li><a href="mgterm.php">Configure Academic Term </a></li>
                                             <li><a href="mgconfig.php">Configure Results </a></li>
+                                            <li><a href="mgcalendar.php">Semester Calendar </a></li>
                                             <li><a href="mgresult.php">Manage Academic Records </a></li>
                                             <li><a href="mgaffective.php">Manage Affective Domain </a></li>
                                             <li><a href="mgmid.php">Mid Term Results </a></li>
@@ -282,6 +283,7 @@ if (!isset($_SESSION['unamed'])) {
                                     <li><a href="mglearners.php">Manage Learners</a></li>
                                     <li><a href="mgterm.php">Configure Academic Term </a></li>
                                     <li><a href="mgconfig.php">Configure Results </a></li>
+                                    <li><a href="mgcalendar.php">Semester Calendar </a></li>
                                     <li><a href="mgresult.php">Manage Academic Records </a></li>
                                     <li><a href="mgaffective.php">Manage Affective Domain </a></li>
                                     <li><a href="mgmid.php">Mid Term Results </a></li>

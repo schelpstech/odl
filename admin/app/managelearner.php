@@ -133,8 +133,9 @@ elseif (isset($_POST['rst']) && $_POST['rst'] === 'Reset Password') {
     $defaultPassword = "Default123";  // plain text OR hash if preferred
 
     try {
+        $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
         $stmt = $pdo->prepare("UPDATE lhpuser SET upwd = ? WHERE uname = ?");
-        $stmt->execute([$defaultPassword, $uname]);
+        $stmt->execute([$hashedPassword, $uname]);
 
         if ($stmt->rowCount() > 0) {
             $lsmessaged = "Status : Password reset to Default123.";

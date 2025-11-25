@@ -23,6 +23,18 @@ $conditions = array(
 );
 $active_term = $model->getRows($tblName, $conditions);
 
+if (!empty($active_term)) {
+    $_SESSION['active_term'] = $active_term['term'];
+    //School Calendar for the  Term
+    $tblName = 'lhpcalendar';
+    $conditions = array(
+        'where' => array(
+            'term' =>  $active_term['term'],
+        )
+    );
+    $calendar_list = $model->getRows($tblName, $conditions);
+}
+
 //Active Session
 $tblName = 'lhpsession';
 $conditions = array(
@@ -320,37 +332,37 @@ if (isset($_SESSION['active']) && isset($_SESSION['user_type']) && $_SESSION['us
     );
     $recent = $model->getRows($tblName, $conditions);
 
-//Subject List
+    //Subject List
 
 
-$tblName = 'lhpalloc';
-$conditions = array(
-    'select' => 'lhpalloc.staffid, lhpstaff.sname, lhpstaff.staffname, lhpalloc.sbjid as sbjref, lhpsubject.sbjid, lhpsubject.sbjname, 
+    $tblName = 'lhpalloc';
+    $conditions = array(
+        'select' => 'lhpalloc.staffid, lhpstaff.sname, lhpstaff.staffname, lhpalloc.sbjid as sbjref, lhpsubject.sbjid, lhpsubject.sbjname, 
                     lhpalloc.classid, lhpalloc.term, lhpfeedback.fid, lhpclass.classid, lhpclass.classname, 
                     COUNT(DISTINCT lhpnote.sbjid) AS note,
                     COUNT(DISTINCT lhpquestion.sbjid) AS task,
                     COUNT(DISTINCT lhpfeedback.sbjid) AS feedback,
                     COUNT(DISTINCT lhpscheme.subject) AS topic',
-    'where' => array(
-        'lhpalloc.classid' => $learner_profile['classid'],
-        'lhpalloc.term' => $active_term['term'],
-    ),
+        'where' => array(
+            'lhpalloc.classid' => $learner_profile['classid'],
+            'lhpalloc.term' => $active_term['term'],
+        ),
 
-    'join_multiple' => array(
-        'lhpclass' => ' ON lhpalloc.classid = lhpclass.classid',
-        'lhpstaff' => ' ON lhpalloc.staffid = lhpstaff.sname',
-        'lhpsubject' => ' ON lhpalloc.sbjid = lhpsubject.sbjid',
-    ),
-    'joinl' => array(
-        'lhpnote' => ' ON lhpalloc.sbjid = lhpnote.sbjid AND lhpnote.status = 1 AND lhpnote.term = "' . $active_term["term"] . '"',
-        'lhpquestion' => ' ON lhpalloc.sbjid = lhpquestion.sbjid AND lhpquestion.status = 1 AND lhpquestion.term = "' . $active_term["term"] . '"',
-        'lhpfeedback' => ' ON lhpalloc.sbjid = lhpfeedback.sbjid AND lhpfeedback.stdid = "' . $_SESSION['active'] . '" AND lhpfeedback.term = "' . $active_term["term"] . '"',
-        'lhpscheme' => ' ON lhpalloc.sbjid = lhpscheme.subject AND lhpscheme.status = 1 AND lhpscheme.term = "' . $active_term["term"] . '"',
-    ),
-    'group_by' => 'lhpalloc.staffid, lhpstaff.sname, lhpstaff.staffname, lhpalloc.sbjid, lhpsubject.sbjid, lhpsubject.sbjname, lhpalloc.classid, lhpalloc.term, lhpfeedback.fid, lhpclass.classid, lhpclass.classname',
-);
+        'join_multiple' => array(
+            'lhpclass' => ' ON lhpalloc.classid = lhpclass.classid',
+            'lhpstaff' => ' ON lhpalloc.staffid = lhpstaff.sname',
+            'lhpsubject' => ' ON lhpalloc.sbjid = lhpsubject.sbjid',
+        ),
+        'joinl' => array(
+            'lhpnote' => ' ON lhpalloc.sbjid = lhpnote.sbjid AND lhpnote.status = 1 AND lhpnote.term = "' . $active_term["term"] . '"',
+            'lhpquestion' => ' ON lhpalloc.sbjid = lhpquestion.sbjid AND lhpquestion.status = 1 AND lhpquestion.term = "' . $active_term["term"] . '"',
+            'lhpfeedback' => ' ON lhpalloc.sbjid = lhpfeedback.sbjid AND lhpfeedback.stdid = "' . $_SESSION['active'] . '" AND lhpfeedback.term = "' . $active_term["term"] . '"',
+            'lhpscheme' => ' ON lhpalloc.sbjid = lhpscheme.subject AND lhpscheme.status = 1 AND lhpscheme.term = "' . $active_term["term"] . '"',
+        ),
+        'group_by' => 'lhpalloc.staffid, lhpstaff.sname, lhpstaff.staffname, lhpalloc.sbjid, lhpsubject.sbjid, lhpsubject.sbjname, lhpalloc.classid, lhpalloc.term, lhpfeedback.fid, lhpclass.classid, lhpclass.classname',
+    );
 
-$subject_list = $model->getRows($tblName, $conditions);
+    $subject_list = $model->getRows($tblName, $conditions);
 
 
     //List of Submitted Assignments
@@ -440,34 +452,34 @@ $subject_list = $model->getRows($tblName, $conditions);
     $bill_paid = $model->getRows($tblName, $conditions);
 
     //Count Payments this term
-   $tblName = 'lhptransaction';
-   $conditions = [
-       'return_type' => 'count',
-       'where' => [
-           'stdid' => $learner_profile['uname'],
-           'classid' => $learner_profile['classid'],
-           'term' => $active_term['term'],
-           'status' => 1,
-       ]
-   ];
-   $bill_transaction = $model->getRows($tblName, $conditions);
+    $tblName = 'lhptransaction';
+    $conditions = [
+        'return_type' => 'count',
+        'where' => [
+            'stdid' => $learner_profile['uname'],
+            'classid' => $learner_profile['classid'],
+            'term' => $active_term['term'],
+            'status' => 1,
+        ]
+    ];
+    $bill_transaction = $model->getRows($tblName, $conditions);
 
-           //Available Results 
+    //Available Results 
 
-           $tblName = 'lhpresultrecord';
-           $conditions = array(
-               'select' => 'Distinct lhpresultrecord.term, lhpresultconfig.status',
-               'where' => array(
-                   'lhpresultrecord.lid' => $learner_profile['uname'],
-               ),
-               'joinl' => array(
-                   'lhpresultconfig' => ' on lhpresultrecord.term = lhpresultconfig.term',
-               ),
-               'order_by' => 'lhpresultrecord.term',
-           );
-           $available_result = $model->getRows($tblName, $conditions);
-           
-   //Results
+    $tblName = 'lhpresultrecord';
+    $conditions = array(
+        'select' => 'Distinct lhpresultrecord.term, lhpresultconfig.status',
+        'where' => array(
+            'lhpresultrecord.lid' => $learner_profile['uname'],
+        ),
+        'joinl' => array(
+            'lhpresultconfig' => ' on lhpresultrecord.term = lhpresultconfig.term',
+        ),
+        'order_by' => 'lhpresultrecord.term',
+    );
+    $available_result = $model->getRows($tblName, $conditions);
+
+    //Results
     $tblName = 'lhpresultconfig';
     $conditions = array(
         'return_type' => 'single',
@@ -589,10 +601,10 @@ $subject_list = $model->getRows($tblName, $conditions);
     );
     $statistics = $model->getRows($tblName, $conditions);
 
-//Allocated Subjects
-$tblName = 'lhpalloc';
-$conditions = array(
-    'select' => '
+    //Allocated Subjects
+    $tblName = 'lhpalloc';
+    $conditions = array(
+        'select' => '
         lhpclass.classid, lhpclass.classname, 
         lhpstaff.sname, lhpstaff.staffname, 
         lhpsubject.sbjid, lhpsubject.sbjname, 
@@ -602,29 +614,29 @@ $conditions = array(
         COUNT(DISTINCT lhpquestion.questid) AS task,
         COUNT(DISTINCT lhpfeedback.fid) AS feedback
     ',
-    'where' => array(
-        'lhpalloc.staffid' => $_SESSION['active'],
-        'lhpalloc.term' => $active_term['term'],
-    ),
-    'join_multiple' => array(
-        'lhpclass' => ' on lhpalloc.classid = lhpclass.classid ',
-        'lhpstaff' => ' on lhpalloc.staffid = lhpstaff.sname ',
-        'lhpsubject' => ' on lhpalloc.sbjid = lhpsubject.sbjid ',
-        
-    ),
-    'joinl' => array(
-        'lhpnote' => ' on lhpalloc.sbjid = lhpnote.sbjid AND lhpnote.status = 1 AND lhpnote.term = "' . $active_term["term"] . '" AND lhpnote.staffid = "' . $_SESSION["active"] . '" ',
-        'lhpquestion' => ' on lhpalloc.sbjid = lhpquestion.sbjid AND lhpquestion.status = 1 AND lhpquestion.term = "' . $active_term["term"] . '"AND lhpquestion.staffid = "' . $_SESSION["active"] . '" ',
-        'lhpscheme' => ' on lhpalloc.sbjid = lhpscheme.subject AND lhpscheme.status = 1 AND lhpscheme.term = "' . $active_term["term"] . '" AND lhpscheme.staffid = "' . $_SESSION["active"] . '"',
-        'lhpfeedback' => ' on lhpalloc.sbjid = lhpfeedback.sbjid AND lhpfeedback.term = "' . $active_term["term"] . '"',
-    ),
-    'group_by' => 'lhpclass.classid, lhpclass.classname, 
+        'where' => array(
+            'lhpalloc.staffid' => $_SESSION['active'],
+            'lhpalloc.term' => $active_term['term'],
+        ),
+        'join_multiple' => array(
+            'lhpclass' => ' on lhpalloc.classid = lhpclass.classid ',
+            'lhpstaff' => ' on lhpalloc.staffid = lhpstaff.sname ',
+            'lhpsubject' => ' on lhpalloc.sbjid = lhpsubject.sbjid ',
+
+        ),
+        'joinl' => array(
+            'lhpnote' => ' on lhpalloc.sbjid = lhpnote.sbjid AND lhpnote.status = 1 AND lhpnote.term = "' . $active_term["term"] . '" AND lhpnote.staffid = "' . $_SESSION["active"] . '" ',
+            'lhpquestion' => ' on lhpalloc.sbjid = lhpquestion.sbjid AND lhpquestion.status = 1 AND lhpquestion.term = "' . $active_term["term"] . '"AND lhpquestion.staffid = "' . $_SESSION["active"] . '" ',
+            'lhpscheme' => ' on lhpalloc.sbjid = lhpscheme.subject AND lhpscheme.status = 1 AND lhpscheme.term = "' . $active_term["term"] . '" AND lhpscheme.staffid = "' . $_SESSION["active"] . '"',
+            'lhpfeedback' => ' on lhpalloc.sbjid = lhpfeedback.sbjid AND lhpfeedback.term = "' . $active_term["term"] . '"',
+        ),
+        'group_by' => 'lhpclass.classid, lhpclass.classname, 
     lhpstaff.sname, lhpstaff.staffname, 
     lhpsubject.sbjid, lhpsubject.sbjname, 
     lhpalloc.aid, lhpalloc.term, lhpalloc.staffid, lhpalloc.sbjid',
-);
+    );
 
-$report = $model->getRows($tblName, $conditions);
+    $report = $model->getRows($tblName, $conditions);
 
 
     //All classes where subject have been allocated

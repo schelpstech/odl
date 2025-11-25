@@ -7,14 +7,14 @@
                         <div class="white_card_header">
                             <div class="box_header m-0">
                                 <div class="main-title">
-                                    <h3 class="m-0">Scheme of Work for <?php echo $active_term['term'] ?></h3>
+                                    <h3 class="m-0">Course Outline for <?php echo $active_term['term'] ?></h3>
                                 </div>
                             </div>
                         </div>
                         <div class="white_card_body">
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
-                                    <label class="" for="classid">Select Class</label>
+                                    <label class="" for="classid">Select Programme</label>
                                 </div>
                                 <select class="form-select" id="classid" tabindex="1" required="yes" onchange="fetchsubject()">
                                     <option value="">select</option>
@@ -29,7 +29,7 @@
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
-                                    <label class="" for="subject">Select Subject</label>
+                                    <label class="" for="subject">Select Course</label>
                                 </div>
                                 <select class="form-select" tabindex="2" id="subject" onchange="fetchscheme()" required="yes">
                                 </select>
@@ -57,7 +57,7 @@
                                 <input type="text" id="topic" class="form-control" tabindex="4" value="" aria-label="Topic" required="yes" aria-describedby="basic-addon1">
                             </div>
 
-                            <button tabindex="5" class="btn_1 full_width text-center" onclick="add_topic_to_scheme()">Add Topic To Scheme of Work</button>
+                            <button tabindex="5" class="btn_1 full_width text-center" onclick="add_topic_to_scheme()">Add Topic To Course Outline</button>
 
                         </div>
                     </div>

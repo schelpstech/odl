@@ -77,9 +77,27 @@ include '../include/navigator.php';
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="inputPassword3" class="form-label col-sm-4 col-form-label">Date of Birth</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control" id="dateofbirth" required="yes" name="dateofbirth"  placeholder="<?php echo $learner_profile['dob'] ?? 'Enter Date of Birth '; ?>" value="<?php echo $learner_profile['dob'] ?? ''; ?>" >
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="inputPassword3" class="form-label col-sm-4 col-form-label">Gender</label>
+                                <div class="col-sm-8">
+                                    <select type="text" class="form-control" id="gender" required="yes" name="gender">
+                                        <option value="">--Select Gender--</option>
+                                        <option value="Male" <?php if (isset($learner_profile['gender']) && $learner_profile['gender'] == 'Male') {
+                                                                echo 'selected'; } ?>>Male</option>
+                                        <option value="Female" <?php if (isset($learner_profile['gender']) && $learner_profile['gender'] == 'Female') {
+                                                                echo 'selected'; } ?>>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="inputPassword3" class="form-label col-sm-4 col-form-label">Password</label>
                                 <div class="col-sm-8">
-                                    <input type="password" class="form-control" id="inputPassword3" minlength="8" maxlength="8" required="yes" name="password" value="<?php echo $learner_profile['upwd'] ?? ''; ?>">
+                                    <input type="password" class="form-control" id="inputPassword3" required="yes" name="password" placeholder="*******************">
                                 </div>
                             </div>
                             <div class=" row">
