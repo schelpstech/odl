@@ -1,18 +1,52 @@
 <?php
-session_start();
-
 // Set the account status variable. You can change this dynamically based on your logic.
-$account_status = 'active'; // Change this to 'active' to enable the form.
+$account_status = 'active'; 
+// Load PDO connector (expects $pdo). If connect.php defines $conn, we'll alias it.
+require_once "connect.php";
+
+if (!isset($pdo)) {
+    if (isset($conn) && $conn instanceof PDO) {
+        $pdo = $conn;
+    } else {
+        throw new RuntimeException('No PDO instance found. Ensure connect.php defines $pdo or $conn.');
+    }
+}
+
+// Check user login
+if (isset($_SESSION['unamed']) && !empty($_SESSION['unamed'])) {
+    header('Location: admin/dashboard.php');
+    exit();
+}
+
+// Load school info
+try {
+    $stmt = $pdo->query("SELECT * FROM lhpschool LIMIT 1");
+    $schoolData = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+    if (!empty($schoolData)) {
+        $schoollogo = $schoolData['logo']
+            ?? $schoolData['schlogo']
+            ?? 'logo.png';
+    } else {
+        $schoollogo = 'logo.png';
+    }
+
+    $schoolname  = $schoolData['schname'] ?? 'Learnable Admin Dashboard ';
+    $schoolmotto = $schoolData['motto'] ?? 'Learnable Admin Dashboard ';
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>LearnAble Admin Login</title>
+	<title><?= htmlspecialchars($schoolname) ?> - Learn at Home</title>
+    <meta name="description" content="<?= htmlspecialchars($schoolmotto) ?>">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
-	<link rel="shortcut icon" type="image/x-icon" href="https://rabbischools.com.ng/press/wp-content/uploads/2020/04/icon.jpg">
+	 <link rel="shortcut icon" type="image/x-icon" href="<?php echo 'learn/asset/img/school/' . rawurlencode($schoollogo); ?>">
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 	<!--===============================================================================================-->

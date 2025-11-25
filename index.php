@@ -1,4 +1,6 @@
 <?php
+// Load PDO connector (expects $pdo). If connect.php defines $conn, we'll alias it.
+require_once "connect.php";
 
    if(isset($_POST['staff'])){	
    
@@ -9,16 +11,44 @@ if(isset($_POST['student'])){
    
     header('Location: ./student.php');
 }
+
+if (!isset($pdo)) {
+    if (isset($conn) && $conn instanceof PDO) {
+        $pdo = $conn;
+    } else {
+        throw new RuntimeException('No PDO instance found. Ensure connect.php defines $pdo or $conn.');
+    }
+}
+
+// Load school info
+try {
+    $stmt = $pdo->query("SELECT * FROM lhpschool LIMIT 1");
+    $schoolData = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+    if (!empty($schoolData)) {
+        $schoollogo = $schoolData['logo']
+            ?? $schoolData['schlogo']
+            ?? 'logo.png';
+    } else {
+        $schoollogo = 'logo.png';
+    }
+
+    $schoolname  = $schoolData['schname'] ?? 'Learnable Admin Dashboard ';
+    $schoolmotto = $schoolData['motto'] ?? 'Learnable Admin Dashboard ';
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>LearnAble</title>
+		<title><?= htmlspecialchars($schoolname) ?> - Learn at Home</title>
+    <meta name="description" content="<?= htmlspecialchars($schoolmotto) ?>">
+	<!--===============================================================================================-->
+	 <link rel="shortcut icon" type="image/x-icon" href="<?php echo 'learn/asset/img/school/' . rawurlencode($schoollogo); ?>">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-<link rel="shortcut icon" type="image/x-icon" href="https://rabbischools.com.ng/press/wp-content/uploads/2020/04/icon.jpg">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
