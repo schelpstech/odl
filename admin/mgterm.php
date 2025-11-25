@@ -3,7 +3,7 @@ include "./inc/nav.php";
 
 try {
   // Fetch active academic session
-  $stmt = $pdo->query("SELECT * FROM lhpSession WHERE status = 1 ORDER BY session DESC");
+  $stmt = $pdo->query("SELECT * FROM lhpsession WHERE status = 1 ORDER BY session DESC");
   $activeSession = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fetch semesters
