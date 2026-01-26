@@ -22,7 +22,7 @@ function runUpdate($pdo, $sql, $params, $msgSuccess, $msgFail, &$ssmessaged)
 /* =====================================================================
    1. CREATE STAFF ACCOUNT
    ===================================================================== */
-if (isset($_POST['createst']) && $_POST['createst'] === 'Create Staff Account') {
+if (isset($_POST['createst']) && $_POST['createst'] === 'Create Instructor Account') {
 
     $stname  = trim($_POST['stname']);
     $stuname = trim($_POST['stuname']);
