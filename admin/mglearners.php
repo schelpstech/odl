@@ -86,7 +86,7 @@ try {
           <div class="form-group ic-cmp-int">
             <div class="form-ic-cmp"><i class="notika-icon notika-support"></i></div>
             <div class="nk-int-st">
-              <input type="text" class="form-control" maxlength="12" name="luname" required placeholder="Enter Username">
+              <input type="text" class="form-control" maxlength="16" name="luname" required placeholder="Enter Username">
             </div>
           </div>
         </div>
