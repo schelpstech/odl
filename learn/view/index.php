@@ -60,15 +60,7 @@ $account_status = 'inactive'; // Change to 'active' to enable the form.
                                             <div class="modal-body">
                                                 <form action="../app/useracces.php" method="POST">
 
-                                                    <!-- User Type -->
-                                                    <div class="mb-3">
-                                                        <select class="form-control" name="user_type" required>
-                                                            <option value="">Select User Type</option>
-                                                            <option value="Learner">Learner</option>
-                                                            <option value="Instructor">Instructor</option>
-                                                        </select>
-                                                    </div>
-
+                                                 
                                                     <!-- Username -->
                                                     <div class="mb-3">
                                                         <input type="text"
