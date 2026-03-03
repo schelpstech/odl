@@ -10,6 +10,7 @@ $account_status = 'inactive'; // Change to 'active' to enable the form.
 <!DOCTYPE html>
 <html lang="zxx">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -21,6 +22,7 @@ $account_status = 'inactive'; // Change to 'active' to enable the form.
     <link rel="stylesheet" href="../asset/css/style1.css" />
     <link rel="stylesheet" href="../asset/css/colors/default.css" id="colorSkinCSS">
 </head>
+
 <body>
     <div class="erroe_page_wrapper">
         <div class="errow_wrap">
@@ -50,26 +52,57 @@ $account_status = 'inactive'; // Change to 'active' to enable the form.
                                             unset($_SESSION['msg']);
                                         }
                                     ?>
-                                    <div class="modal-content cs_modal">
-                                        <div class="modal-header justify-content-center theme_bg_1">
-                                            <h5 class="modal-title text_white">Log in</h5>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="../app/useracces.php" method="POST" enctype="multipart/form-data">
-                                                <div class="">
-                                                    <input type="text" class="form-control" placeholder="Enter your username" name="userid" autocomplete="new-email" tabindex="1" required="yes" autofocus>
-                                                </div>
-                                                <div class="">
-                                                    <input type="password" class="form-control" placeholder="Password" name="userpwd" autocomplete="new-userpwd" tabindex="2" required="yes">
-                                                </div>
-                                                <button name="log_in" type="submit" tabindex="3" class="btn_1 full_width text-center" value="Log in">Log in</button>
+                                        <div class="modal-content cs_modal">
+                                            <div class="modal-header justify-content-center theme_bg_1">
+                                                <h5 class="modal-title text_white">Log in</h5>
+                                            </div>
 
-                                                <div class="text-center">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#forgot_password" data-bs-dismiss="modal" class="pass_forget_btn">Forget Password?</a>
-                                                </div>
-                                            </form>
+                                            <div class="modal-body">
+                                                <form action="../app/useracces.php" method="POST">
+
+                                                    <!-- User Type -->
+                                                    <div class="mb-3">
+                                                        <select class="form-control" name="user_type" required>
+                                                            <option value="">Select User Type</option>
+                                                            <option value="Learner">Learner</option>
+                                                            <option value="Instructor">Instructor</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Username -->
+                                                    <div class="mb-3">
+                                                        <input type="text"
+                                                            class="form-control"
+                                                            placeholder="Enter your username"
+                                                            name="userid"
+                                                            autocomplete="off"
+                                                            required>
+                                                    </div>
+
+                                                    <!-- Password -->
+                                                    <div class="mb-3">
+                                                        <input type="password"
+                                                            class="form-control"
+                                                            placeholder="Enter your password"
+                                                            name="userpwd"
+                                                            autocomplete="off"
+                                                            required>
+                                                    </div>
+
+                                                    <button name="log_in"
+                                                        type="submit"
+                                                        class="btn_1 full_width text-center"
+                                                        value="Log in">
+                                                        Log in
+                                                    </button>
+
+                                                    <div class="text-center mt-3">
+                                                        <a href="#" class="pass_forget_btn">Forgot Password?</a>
+                                                    </div>
+
+                                                </form>
+                                            </div>
                                         </div>
-                                    </div>
                                     <?php
                                     }
                                     ?>
@@ -97,4 +130,5 @@ $account_status = 'inactive'; // Change to 'active' to enable the form.
     <script src="../asset/js/bootstrap1.min.js"></script>
 
 </body>
+
 </html>

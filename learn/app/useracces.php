@@ -1,152 +1,171 @@
 <?php
-session_start();
 include '../app/query.php';
-
 $valErr = '';
-$userid = '';
-$userpwd = '';
-$usertype = '';
-$login_details = [];
-
-/* ===================== LOGOUT ===================== */
+//LOGOUT
 if (isset($_POST['logout']) && $_POST['logout'] === 'logout') {
-
     $model->log_out_user();
-
-    $_SESSION['msg'] = '
-        <div class="alert text-white bg-info d-flex align-items-center justify-content-between" role="alert">
-            <div class="alert-text">Bye! <b>Log out successful</b>!</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>';
-
+    session_start();
+    $_SESSION['msg'] =
+        '<div class="alert text-white bg-info d-flex align-items-center justify-content-between" role="alert">
+                            <div class="alert-text">Bye! <b>Log out successful</b>!</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>';
     $model->redirect('../view/index.php');
 }
 
+// Check if log-in form is submitted from website
 
-/* ===================== LOGIN ===================== */
-if (isset($_POST['log_in']) && $_POST['log_in'] === 'Log in') {
+elseif (isset($_POST['log_in']) && $_POST['log_in'] !== 'Log in') {
+    $valErr .= 'Invalid Login request. You are attempting login from an unsecured page!.<br/>';
+} elseif (isset($_POST['log_in']) && $_POST['log_in'] == 'Log in') {
 
-    /* ===== Validate Inputs ===== */
-    if (empty($_POST['userid'])) {
-        $valErr .= 'Username field must not be empty!.<br/>';
-    } else {
-        $userid = htmlspecialchars(trim($_POST['userid']));
+
+    // Retrieve form input
+    if (isset($_POST["userid"])) {
+        if (!isset($_POST["userid"])) {
+            $valErr .= 'Username field must not be empty!.<br/>';
+        } else {
+            $userid = htmlspecialchars($_POST["userid"]);
+        }
     }
 
-    if (empty($_POST['userpwd'])) {
-        $valErr .= 'Password field must not be empty!.<br/>';
-    } else {
-        $userpwd = trim($_POST['userpwd']);
+    if (isset($_POST["userpwd"])) {
+        if (!isset($_POST["userpwd"])) {
+            $valErr .= 'Password field must not be empty!.<br/>';
+        } else {
+            $userpwd = htmlspecialchars($_POST["userpwd"]);
+        }
     }
 
-    if (!empty($valErr)) {
-        $_SESSION['msg'] = '
-            <div class="alert text-white bg-danger d-flex align-items-center justify-content-between">
-                <div class="alert-text">Error! <br>' . $valErr . '</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>';
-        $model->redirect('../view/index.php');
-    }
+    //check if username exist 
+    $tblName = 'lhpuser';
+    $conditions = array(
+        'return_type' => 'count',
+        'where' => array(
+            'uname' => $userid,
+        )
+    );
+    $confirm_learner = $model->getRows($tblName, $conditions);
 
-    /* ===== Check Learner Table ===== */
-    $confirm_learner = $model->getRows('lhpuser', [
-        'return_type' => 'single',
-        'where' => ['uname' => $userid]
-    ]);
+    //check if username exist 
+    $tblName = 'lhpstaff';
+    $conditions = array(
+        'return_type' => 'count',
+        'where' => array(
+            'sname' => $userid,
+        )
+    );
+    $confirm_staff = $model->getRows($tblName, $conditions);
 
-    /* ===== Check Staff Table ===== */
-    $confirm_staff = $model->getRows('lhpstaff', [
-        'return_type' => 'single',
-        'where' => ['sname' => $userid]
-    ]);
-
-    if (!empty($confirm_learner)) {
+    if ($confirm_learner == 1) {
         $usertype = 'Learner';
-        $login_details = $confirm_learner;
-        $password = $login_details['upwd'] ?? '';
-    } 
-    elseif (!empty($confirm_staff)) {
+        //select password 
+        $tblName = 'lhpuser';
+        $conditions = array(
+            'return_type' => 'single',
+            'where' => array(
+                'uname' => $userid,
+            )
+        );
+        $login_details = $model->getRows($tblName, $conditions);
+    } elseif ($confirm_staff == 1) {
         $usertype = 'Instructor';
-        $login_details = $confirm_staff;
-        $password = $login_details['spwd'] ?? '';
-    } 
-    else {
-        $valErr = 'Invalid Login Credentials!.<br/>';
-
-        $model->insert_data('log', [
+        //select password 
+        $tblName = 'lhpstaff';
+        $conditions = array(
+            'return_type' => 'single',
+            'where' => array(
+                'sname' => $userid,
+            )
+        );
+        $login_details = $model->getRows($tblName, $conditions);
+    } else {
+        $valErr .= 'Invalid Login Credentials! We cannot find this username.<br/>';
+        $tablename = 'log';
+        $logindata = array(
             'uname' => $userid,
             'utype' => 'unknown',
-            'uip'   => $_SERVER['REMOTE_ADDR'],
-            'stat'  => 4
-        ]);
-
-        $_SESSION['msg'] = '
-            <div class="alert text-white bg-danger d-flex align-items-center justify-content-between">
-                <div class="alert-text">Error! <br>' . $valErr . '</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            'uip' => $_SERVER['REMOTE_ADDR'],
+            'stat' => 4,
+        );
+        $insert = $model->insert_data($tablename, $logindata);
+        $_SESSION['msg'] =
+            '<div class="alert text-white bg-danger d-flex align-items-center justify-content-between" role="alert">
+                    <div class="alert-text">Error! <br>' . $valErr . '</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>';
-
         $model->redirect('../view/index.php');
     }
+    //Check Password
 
-    /* ===== Verify Password ===== */
-    if (!empty($password) && password_verify($userpwd, $password)) {
 
-        /* ===== Check Active Status ===== */
-        if (isset($login_details['status']) && (int)$login_details['status'] === 1) {
+    if (isset($login_details['upwd'])) {
+        $password = $login_details['upwd'];
+    } elseif (isset($login_details['spwd'])) {
+        $password = $login_details['spwd'];
+    }
+    if (password_verify($userpwd,$password)) {
+        //Check Active Status
+        if (isset($login_details['status']) && $login_details['status'] == 1) {
 
-            $model->insert_data('log', [
+            // Record Log Access
+
+            $tablename = 'log';
+            $logindata = array(
                 'uname' => $userid,
                 'utype' => $usertype,
-                'uip'   => $_SERVER['REMOTE_ADDR'],
-                'stat'  => 1
-            ]);
+                'uip' => $_SERVER['REMOTE_ADDR'],
+                'stat' => 1,
+            );
+            $insert = $model->insert_data($tablename, $logindata);
 
-            $_SESSION['active'] = $userid;
-            $_SESSION['user_type'] = $usertype;
-
-            $_SESSION['msg'] = '
-                <div class="alert text-white bg-success d-flex align-items-center justify-content-between">
-                    <div class="alert-text">Welcome! <b>Log in successful</b>!</div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            $_SESSION['msg'] =
+                '<div class="alert text-white bg-success d-flex align-items-center justify-content-between" role="alert">
+                        <div class="alert-text">Welcome! <b>Log in successful</b>!</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>';
-
-            if ($usertype === 'Learner') {
+            if ($usertype == 'Learner') {
+                $_SESSION['active'] = $userid;
+                $_SESSION['user_type'] = $usertype;
                 $model->redirect('../view/learner/index.php');
-            } else {
+            } elseif ($usertype == 'Instructor') {
+                $_SESSION['active'] = $userid;
+                $_SESSION['user_type'] = $usertype;
                 $model->redirect('../view/instructor/index.php');
             }
-
         } else {
-
-            $valErr = 'Access Denied! Contact school administrator.<br/>';
-
-            $model->insert_data('log', [
+            $valErr .= 'Access Denied! Contact school administrator.<br/>';
+            $tablename = 'log';
+            $logindata = array(
                 'uname' => $userid,
                 'utype' => $usertype,
-                'uip'   => $_SERVER['REMOTE_ADDR'],
-                'stat'  => 2
-            ]);
+                'uip' => $_SERVER['REMOTE_ADDR'],
+                'stat' => 2,
+            );
+            $insert = $model->insert_data($tablename, $logindata);
+            $_SESSION['msg'] =
+                '<div class="alert text-white bg-danger d-flex align-items-center justify-content-between" role="alert">
+                        <div class="alert-text">Error! <br>' . $valErr . '</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+            $model->redirect('../view/index.php');
         }
-
     } else {
-
-        $valErr = 'Invalid Login Credentials!.<br/>';
-
-        $model->insert_data('log', [
+        // Record Log Access
+        $valErr .= 'Invalid Login Credentials!.<br/>';
+        $tablename = 'log';
+        $logindata = array(
             'uname' => $userid,
             'utype' => $usertype,
-            'uip'   => $_SERVER['REMOTE_ADDR'],
-            'stat'  => 3
-        ]);
+            'uip' => $_SERVER['REMOTE_ADDR'],
+            'stat' => 3,
+        );
+        $insert = $model->insert_data($tablename, $logindata);
+        $_SESSION['msg'] =
+            '<div class="alert text-white bg-danger d-flex align-items-center justify-content-between" role="alert">
+                                <div class="alert-text">Error! <br>' . $valErr . '</div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>';
+        $model->redirect('../view/index.php');
     }
-
-    $_SESSION['msg'] = '
-        <div class="alert text-white bg-danger d-flex align-items-center justify-content-between">
-            <div class="alert-text">Error! <br>' . $valErr . '</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>';
-
-    $model->redirect('../view/index.php');
 }
-?>
