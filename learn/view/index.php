@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Set the account status variable. You can change this dynamically based on your logic.
-$account_status = 'active'; // Change to 'active' to enable the form.
+$account_status = 'inactive'; // Change to 'active' to enable the form.
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
