@@ -40,8 +40,8 @@ if (isset($_POST['createst']) && $_POST['createst'] === 'Create Instructor Accou
         ");
 
         $stmt->execute([
-            ':sname'     => $stname,
-            ':staffname' => $stuname,
+            ':sname'     => $stuname,
+            ':staffname' => $stname,
             ':password'  => $hashedPwd,
             ':email'     => $stmail,
             ':phone'     => $stfone,
